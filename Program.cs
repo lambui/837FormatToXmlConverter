@@ -12,16 +12,28 @@ namespace edi_app
     class Program
     {
         const char seperator = '*';
-        static List<List<string>> file837 = new List<List<string>>(); 
+        const string form_837_folder_name = "837Form";
+        const string xml_folder = "XmlExport";
+        static List<List<string>> file837 = new List<List<string>>();
+
+        //create form_837_folder_name and xml_folder if not already exist
+        static void Init()
+        {
+            if(Directory.Exists(Directory.GetCurrentDirectory() + "/" + form_837_folder_name) == false)
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/" + form_837_folder_name);
+            if (Directory.Exists(Directory.GetCurrentDirectory() + "/" + xml_folder) == false)
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/" + xml_folder);
+        }
 
         static void Main(string[] args)
         {
+            Init();
             while(true)
             {
                 file837.Clear();
                 while(true)
                 {
-                    Console.WriteLine("Enter file name with extension: ");
+                    Console.WriteLine("Enter 837 file name (ex: test.837) within 837Form folder: ");
                     string filename = Console.ReadLine();
                     if(filename != "")
                         if(ReadFile(filename))
@@ -39,11 +51,12 @@ namespace edi_app
             Thread.Sleep(2000);
         }
 
+        //read 837 format file into List<List<string>> file837
         static bool ReadFile(string filename)
         {
             try
             {
-                StreamReader reader = new StreamReader(Directory.GetCurrentDirectory() + "/" + filename);
+                StreamReader reader = new StreamReader(Directory.GetCurrentDirectory() + "/" + form_837_folder_name + "/" + filename);
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -57,6 +70,7 @@ namespace edi_app
             return true;
         }
 
+        //convert List<List<string>> file837 into basic xml format and write xml file in xml_folder
         static void ToXml()
         {
             XmlDocument xml = new XmlDocument();
@@ -81,7 +95,7 @@ namespace edi_app
             Console.WriteLine("Enter exported xml file name without extension: ");
             string filename = Console.ReadLine();
             filename += ".xml";
-            File.WriteAllText(filename, XElement.Parse(xml.OuterXml).ToString());
+            File.WriteAllText(Directory.GetCurrentDirectory() + "/" + xml_folder + "/" + filename, XElement.Parse(xml.OuterXml).ToString());
             Console.WriteLine("Exported XML file " + filename + " at " + Directory.GetCurrentDirectory());
         }
     }
