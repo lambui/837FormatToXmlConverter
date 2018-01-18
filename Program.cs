@@ -96,7 +96,7 @@ namespace edi_app
             string filename = Console.ReadLine();
             filename += ".xml";
             File.WriteAllText(Directory.GetCurrentDirectory() + "/" + xml_folder + "/" + filename, XElement.Parse(xml.OuterXml).ToString());
-            Console.WriteLine("Exported XML file " + filename + " at " + Directory.GetCurrentDirectory());
+            Console.WriteLine("Exported XML file " + filename + " at " + Directory.GetCurrentDirectory() + "/" + xml_folder);
         }
     }
 }
